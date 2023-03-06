@@ -1,0 +1,1 @@
+{"model_path": "./target_models/fixed_features/MNIST/alexnet/alexnet_128_10_conv_fixed.pkl", "model_cfg_path": "./target_model_configs/fixed_features/MNIST/alexnet/alexnet_128_10.yaml", "torch_seed": 1677144336.6376593, "evaluation_result": "Test accuracy: 99.26% (9926/10000)"}
