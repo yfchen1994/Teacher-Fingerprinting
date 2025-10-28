@@ -30,8 +30,6 @@ class PretrainedModel(nn.Module):
         self.pretrained = pretrained
         self.selected_block_amount = selected_block_amount
         self._prepare_pretrained_model()
-        if 'backdoor' in self.pretrained_name:
-            return
 
         module_dict = []
         block_lists = []
@@ -78,9 +76,7 @@ class PretrainedModel(nn.Module):
         # https://arxiv.org/abs/2106.12478
         self.input_size = INPUT_SIZE
 
-        if 'backdoored' in self.pretrained_name:
-            self._prepare_model_backdoored()
-        elif 'clean' in self.pretrained_name:
+        if 'clean' in self.pretrained_name:
             self._prepare_model_clean()
         elif self.pretrained_name == 'alexnet':
             self._prepare_alexnet()
@@ -214,25 +210,3 @@ class PretrainedModel(nn.Module):
 
         self.block_split = block_split[self.pretrained_name]
 
-    ### Backdoored
-    def _prepare_model_backdoored(self):
-        model_path = './{}_infected_model.pkl'.format(
-            self.pretrained_name).replace('_backdoored', '')
-
-        if 'cifar10' in self.pretrained_name:
-            from pretrained_model_inference.latent_backdoor.inject_latent_backdoor_cifar10 import get_init_model
-        elif 'mnist' in self.pretrained_name:
-            from pretrained_model_inference.latent_backdoor.inject_latent_backdoor_mnist import get_init_model
-        elif 'stl10' in self.pretrained_name:
-            from pretrained_model_inference.latent_backdoor.inject_latent_backdoor_stl10 import get_init_model
-        else:
-            raise ValueError('No such backdoored teacher: {}'.format(
-                self.pretrained_name))
-
-        model = get_init_model(
-            self.pretrained_name.replace(
-                self.pretrained_name.split('_')[0] + '_',
-                '').replace('_backdoored', ''))
-        model = load_model(model, model_path)
-        self.pretrained_blocks = model.model_pretrain.pretrained_blocks
-        self.classifier = model.classifier
