@@ -11,7 +11,6 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 from torch.utils.checkpoint import checkpoint_sequential
-from model_stealing.query_blackbox import KnockoffDataset
 import torchvision
 import copy
 from utils import *
@@ -361,10 +360,6 @@ def get_dataset_by_config(dataset_config, other_config_to_reset=None):
     else:
         other_config = dataset_config['other_config']
 
-    # Compare the dataset
-    if dataset_config['dataset_name'] == 'KnockoffDataset':
-        knockoff_dataset_dir = dataset_config['dataset_dir']
-        return KnockoffDataset(knockoff_dataset_dir, transform=transform)
 
     dataset = load_dataset(dataset_name=dataset_name,
                            kwargs=other_config,
